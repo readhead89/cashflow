@@ -249,6 +249,24 @@
           <div class="group-label">Акции / Фонды / Депозиты</div>
           <div id="stocks-rows"></div>
           <button class="add-btn" onclick="addSmartStockRow()">+ добавить</button>
+      <div style="margin-top:12px;padding:12px;background:#f0f9ff;border:1px solid #bae6fd;border-radius:10px;">
+        <div style="font-size:11px;font-weight:600;color:#0369a1;margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em;">🧮 Калькулятор акций</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;align-items:end;">
+          <div>
+            <div style="font-size:10px;color:#888;margin-bottom:3px;">Цена 1 акции</div>
+            <input type="number" id="calc-price" placeholder="0" style="font-size:13px;padding:5px 8px;width:100%;border:1px solid #bae6fd;border-radius:6px;background:#fff;" oninput="calcStocks()">
+          </div>
+          <div>
+            <div style="font-size:10px;color:#888;margin-bottom:3px;">Сумма на руках</div>
+            <input type="number" id="calc-budget" placeholder="0" style="font-size:13px;padding:5px 8px;width:100%;border:1px solid #bae6fd;border-radius:6px;background:#fff;" oninput="calcStocks()">
+          </div>
+          <div>
+            <div style="font-size:10px;color:#888;margin-bottom:3px;">Можно купить</div>
+            <div id="calc-result" style="font-size:18px;font-weight:600;color:#0369a1;padding:4px 8px;">—</div>
+          </div>
+        </div>
+        <div id="calc-detail" style="font-size:11px;color:#666;margin-top:6px;"></div>
+      </div>
           <div class="group-label">Недвижимость</div>
           <div id="re-asset-rows"></div>
           <button class="add-btn" onclick="addREAssetRow()">+ добавить объект</button>
@@ -1112,6 +1130,29 @@ function syncAllLiabToExp() {
     }
   });
   recalc();
+}
+
+
+// ─── КАЛЬКУЛЯТОР АКЦИЙ ────────────────────────────────────
+function calcStocks() {
+  let price  = parseFloat(document.getElementById('calc-price').value)  || 0;
+  let budget = parseFloat(document.getElementById('calc-budget').value) || 0;
+  let result = document.getElementById('calc-result');
+  let detail = document.getElementById('calc-detail');
+
+  if(!price || !budget) {
+    result.textContent = '—';
+    detail.textContent = '';
+    return;
+  }
+
+  let qty      = Math.floor(budget / price);
+  let spent    = qty * price;
+  let leftover = budget - spent;
+
+  result.textContent = qty + ' шт.';
+  detail.textContent = 'Потратишь: $' + spent.toLocaleString('ru-RU')
+    + (leftover > 0 ? ' · Остаток: $' + leftover.toLocaleString('ru-RU') : ' · Без остатка');
 }
 
 // ─── INIT ─────────────────────────────────────────────────
